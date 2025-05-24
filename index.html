@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>SWIFT MAIL BCF</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #ff4757;
+      --secondary-color: #ffa502;
+      --background-color: #000000;
+      --text-color: #ffffff;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 10px;
+    }
+    .logo-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      background: url('https://i.ibb.co/nM9gqpWz/IMG-20250521-WA0009.png') no-repeat center center;
+      background-size: contain;
+      animation: floatLogo 3s infinite ease-in-out;
+      filter: drop-shadow(0 0 10px var(--primary-color));
+      position: relative;
+      z-index: 1;
+    }
+    .logo-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,71,87,0.8) 0%, rgba(255,71,87,0) 70%);
+      animation: pulseGlow 2s infinite alternate;
+      z-index: 0;
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulseGlow {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      100% { transform: scale(1.2); opacity: 0.3; }
+    }
+    h1.title {
+      font-size: 1.8em;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+      animation: textGlow 2s infinite alternate;
+    }
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+      100% { text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--primary-color), 0 0 40px var(--secondary-color); }
+    }
+    .email-box, .inbox {
+      background-color: #111;
+      border-radius: 10px;
+      box-shadow: 0 0 10px var(--primary-color);
+      padding: 15px;
+      margin: 10px auto;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .email-display {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    .copy-btn, .new-btn {
+      padding: 8px 14px;
+      margin: 5px;
+      background-color: var(--secondary-color);
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+    .copy-btn:hover, .new-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+    .inbox h2 {
+      font-size: 1.4em;
+      color: var(--secondary-color);
+      text-shadow: 0 0 5px var(--secondary-color);
+    }
+    .message {
+      text-align: left;
+      border-bottom: 1px solid #444;
+      padding: 10px;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+    .message:hover {
+      background-color: #222;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 0.8em;
+      text-align: center;
+      opacity: 0.8;
+    }
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    a:hover {
+      color: var(--secondary-color);
+      text-shadow: 0 0 5px var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <div class="logo-glow"></div>
+    <div class="logo"></div>
+  </div>
+  <h1 class="title">SWIFT MAIL BCF</h1>
+  <div class="email-box">
+    <div class="email-display" id="email">Click "New Email" to generate</div>
+    <button class="copy-btn" onclick="copyEmail()">Copy</button>
+    <button class="new-btn" onclick="generateNewEmail()">New Email</button>
+  </div>
+  <div class="inbox">
+    <h2>Inbox</h2>
+    <div id="inboxMessages">Generate an email first</div>
+  </div>
+  <footer>
+    Developed by <a href="https://www.facebook.com/BangladeshCivilianForce369" target="_blank">Bangladesh Civilian Force</a><br>
+    <a href="https://t.me/BangladeshCivilianForceBCF" target="_blank">Join Telegram</a>
+  </footer>
+
+  <script>
+    // উন্নত API কনফিগারেশন
+    const apiOptions = [
+      {
+        name: "1secmail",
+        domains: ["1secmail.com", "1secmail.org", "1secmail.net"],
+        generateEmail: () => {
+          const login = Math.random().toString(36).substring(2, 10);
+          const domain = apiOptions[0].domains[Math.floor(Math.random() * apiOptions[0].domains.length)];
+          return { login, domain, email: `${login}@${domain}` };
+        },
+        inboxUrl: (login, domain) => `https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`,
+        messageUrl: (id, login, domain) => `https://www.1secmail.com/api/v1/?action=readMessage&login=${login}&domain=${domain}&id=${id}`
+      },
+      {
+        name: "mailinator",
+        domains: ["mailinator.com"],
+        generateEmail: () => {
+          const login = Math.random().toString(36).substring(2, 10);
+          return { login, domain: "mailinator.com", email: `${login}@mailinator.com` };
+        },
+        inboxUrl: (login) => `https://mailinator.com/api/v2/domains/public/inboxes/${login}`
+      }
+    ];
+
+    let currentApi = apiOptions[0];
+    let login = "", domain = "", email = "";
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+
+    // ইমেইল জেনারেট ফাংশন
+    async function generateNewEmail() {
+      try {
+        document.getElementById("email").textContent = "Generating...";
+        
+        // র‍্যান্ডম API সিলেক্ট করুন
+        currentApi = apiOptions[Math.floor(Math.random() * apiOptions.length)];
+        const generated = currentApi.generateEmail();
+        
+        login = generated.login;
+        domain = generated.domain;
+        email = generated.email;
+        
+        document.getElementById("email").textContent = email;
+        document.getElementById("inboxMessages").innerHTML = "Checking inbox...";
+        
+        await fetchInbox();
+        
+      } catch (error) {
+        console.error("Generation error:", error);
+        
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          generateNewEmail();
+        } else {
+          document.getElementById("email").textContent = "Error generating email";
+          document.getElementById("inboxMessages").innerHTML = 
+            "Service unavailable. Please try again later.";
+        }
+      }
+    }
+
+    // ইমেইল কপি ফাংশন
+    function copyEmail() {
+      if (!email) {
+        alert("Generate an email first!");
+        return;
+      }
+      navigator.clipboard.writeText(email)
+        .then(() => alert("Email copied to clipboard: " + email))
+        .catch(err => alert("Failed to copy: " + err));
+    }
+
+    // ইনবক্স ফাংশন
+    async function fetchInbox() {
+      if (!login || !domain) return;
+
+      try {
+        let messages = [];
+        
+        if (currentApi.name === "1secmail") {
+          const response = await fetch(currentApi.inboxUrl(login, domain));
+          messages = await response.json();
+        } 
+        else if (currentApi.name === "mailinator") {
+          const response = await fetch(currentApi.inboxUrl(login));
+          const data = await response.json();
+          messages = data.msgs || [];
+        }
+
+        const inboxDiv = document.getElementById("inboxMessages");
+        inboxDiv.innerHTML = "";
+
+        if (messages.length === 0) {
+          inboxDiv.innerHTML = "<p>No messages yet. Share your email to receive messages.</p>";
+        } else {
+          messages.forEach(msg => {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = "message";
+            
+            if (currentApi.name === "1secmail") {
+              messageDiv.innerHTML = `
+                <strong>From:</strong> ${msg.from}<br>
+                <strong>Subject:</strong> ${msg.subject}<br>
+                <small>Received: ${new Date(msg.date).toLocaleString()}</small>
+                <button onclick="viewMessage('${msg.id}')">View</button>
+              `;
+            } else {
+              messageDiv.innerHTML = `
+                <strong>From:</strong> ${msg.from}<br>
+                <strong>Subject:</strong> ${msg.subject}<br>
+                <small>Received: ${new Date(msg.time).toLocaleString()}</small>
+                <button onclick="viewMessage('${msg.id}')">View</button>
+              `;
+            }
+            
+            inboxDiv.appendChild(messageDiv);
+          });
+        }
+        retryCount = 0;
+        
+      } catch (error) {
+        console.error("Fetch error:", error);
+        
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          fetchInbox();
+        } else {
+          document.getElementById("inboxMessages").innerHTML = `
+            <p>Error loading messages. Try generating a new email.</p>
+            <p><small>${error.message}</small></p>
+          `;
+        }
+      }
+    }
+
+    // মেসেজ ভিউ ফাংশন
+    async function viewMessage(messageId) {
+      try {
+        let message = {};
+        
+        if (currentApi.name === "1secmail") {
+          const response = await fetch(currentApi.messageUrl(messageId, login, domain));
+          message = await response.json();
+        } 
+        else if (currentApi.name === "mailinator") {
+          const response = await fetch(`https://mailinator.com/api/v2/domains/public/inboxes/${login}/messages/${messageId}`);
+          message = await response.json();
+          message.textBody = message.parts?.find(p => p.headers["content-type"][0].includes("text/plain"))?.body || "No content";
+        }
+
+        const content = message.textBody || "No content available";
+        alert(`✉️ Message\n\nFrom: ${message.from}\nSubject: ${message.subject}\n\n${content}`);
+        
+      } catch (error) {
+        console.error("View error:", error);
+        alert("Could not load message. Please try again.");
+      }
+    }
+
+    // প্রতি ১৫ সেকেন্ডে ইনবক্স চেক করুন
+    setInterval(fetchInbox, 15000);
+  </script>
+</body>
+</html>
